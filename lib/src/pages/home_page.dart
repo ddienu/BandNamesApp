@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:band_names_app/src/models/band.dart';
@@ -46,7 +49,7 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (BuildContext context, int index) => _bandTile(bands[index])
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: addNewBand,
         child: Icon( Icons.add ),
         elevation: 1,
         backgroundColor: Colors.blue[400],
@@ -67,4 +70,66 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
+  addNewBand(){
+
+  final textController = TextEditingController();
+
+  if ( Platform.isWindows ){
+
+    return showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        title: Text('Enter the name of the band'),
+        content: TextField(
+          controller: textController,
+        ),
+        actions: [
+          MaterialButton(
+            onPressed: () => addNewBandToList( textController.text ),
+            child: Text('Add'),
+            textColor: Colors.blue,
+            )
+        ],
+      )
+      );
+  }
+
+    return showCupertinoDialog(
+      context: context, 
+      builder: ( context ) => CupertinoAlertDialog(
+        title: Text('Enter the name of the band'),
+        content: CupertinoTextField(
+          controller: textController,
+        ),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text('Add'), 
+            onPressed: () => addNewBandToList( textController.text ),
+            ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: Text('Close'),
+            onPressed: () => Navigator.pop(context),
+            ),
+        ],
+      )
+    );
+}
+
+
+  void addNewBandToList ( String name ){
+
+    print( name );
+    print( DateTime.now() );
+
+    if ( name.length > 1 ){
+      bands.add( Band(id: DateTime.now().toString(), name: name, votes: 2));
+      setState(() {});
+    }
+
+      Navigator.pop(context);
+
+  } 
 }
