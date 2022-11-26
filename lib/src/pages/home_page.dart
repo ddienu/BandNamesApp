@@ -57,17 +57,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  ListTile _bandTile(Band band) {
-    return ListTile(
-      leading: CircleAvatar(
-            backgroundColor: Colors.blue[200],
-            child: Text( band.name.substring(0, 2).toUpperCase()),
-          ),
-      title: Text( band.name),
-      trailing: Text('${band.votes}', style: TextStyle( fontSize: 20),),
-      onTap: (){
-        print(band.name);
+  Widget _bandTile(Band band) {
+    return Dismissible(
+      key: Key( band.id ),
+      direction: DismissDirection.startToEnd,
+      confirmDismiss: (DismissDirection direction){
+        return showDialog(
+          context: context, 
+          builder: ( BuildContext context ){
+            return AlertDialog(
+              title: Text('Are you sure to delete ${band.name} ?'),
+              actions: [
+                MaterialButton(
+                  onPressed: (){
+                    Navigator.pop(context, true);
+                  },
+                  child: Icon( CupertinoIcons.check_mark, color: Colors.blue.withOpacity(0.8), )
+                  ),
+                MaterialButton(
+                  onPressed: (){
+                    Navigator.pop(context, false);
+                  },
+                  child: Icon ( CupertinoIcons.xmark, color: Colors.blue.withOpacity(0.8), ),
+                  ),  
+              ],
+
+            );
+          } 
+          );
       },
+      onDismissed: ( DismissDirection direction){
+        print( band.id );
+        print( band.name );
+        //TODO: Call to server to erase the band
+      },
+      background: Container(
+        padding: EdgeInsets.only( left: 15.0 ),
+        alignment: Alignment.centerLeft,
+        color: Colors.red.withOpacity(0.7),
+          child: Icon( CupertinoIcons.trash, color: Colors.white,)
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+              backgroundColor: Colors.blue[200],
+              child: Text( band.name.substring(0, 2).toUpperCase()),
+            ),
+        title: Text( band.name),
+        trailing: Text('${band.votes}', style: TextStyle( fontSize: 20),),
+        onTap: (){
+          print(band.name);
+        },
+      ),
     );
   }
 
@@ -122,7 +162,6 @@ class _HomePageState extends State<HomePage> {
   void addNewBandToList ( String name ){
 
     print( name );
-    print( DateTime.now() );
 
     if ( name.length > 1 ){
       bands.add( Band(id: DateTime.now().toString(), name: name, votes: 2));
