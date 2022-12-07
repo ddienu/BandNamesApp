@@ -46,5 +46,12 @@ class SocketService with ChangeNotifier {
     notifyListeners();
   });
 
+  socket.on('nuevo-mensaje', ( payload ) {
+    print('nuevo-mensaje: ');
+    print( 'Nombre: ' + payload['nombre']);
+    print( 'Mensaje: ' + payload['mensaje']);
+    print( payload.containsKey('mensaje2') ? payload['mensaje2'] : 'No hay' );
+  });
+
   }
 }
