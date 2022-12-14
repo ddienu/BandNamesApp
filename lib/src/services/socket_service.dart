@@ -14,8 +14,13 @@ enum ServerStatus {
 class SocketService with ChangeNotifier {
 
   ServerStatus _serverStatus = ServerStatus.Connecting;
+  late IO.Socket _socket;
 
-  get serverStatus => _serverStatus;
+  ServerStatus get serverStatus => _serverStatus;
+  IO.Socket get socket => _socket;
+
+
+
 
   SocketService(){
 
@@ -26,7 +31,7 @@ class SocketService with ChangeNotifier {
   void _initConfig() {
 
       // Dart client
-  IO.Socket socket = IO.io('http://localhost:3000',
+  _socket = IO.io('http://localhost:3000',
 
     IO.OptionBuilder()
       .setTransports(['websocket'])
@@ -34,24 +39,24 @@ class SocketService with ChangeNotifier {
       .build()
   );
 
-  socket.onConnect((_) {
+  _socket.onConnect((_) {
 
     _serverStatus = ServerStatus.Online;
     notifyListeners();
     
   });
 
-  socket.onDisconnect((_){
+  _socket.onDisconnect((_){
     _serverStatus = ServerStatus.Offline;
     notifyListeners();
   });
 
-  socket.on('nuevo-mensaje', ( payload ) {
-    print('nuevo-mensaje: ');
-    print( 'Nombre: ' + payload['nombre']);
-    print( 'Mensaje: ' + payload['mensaje']);
-    print( payload.containsKey('mensaje2') ? payload['mensaje2'] : 'No hay' );
-  });
+  // socket.on('nuevo-mensaje', ( payload ) {
+  //   print('nuevo-mensaje: ');
+  //   print( 'Nombre: ' + payload['nombre']);
+  //   print( 'Mensaje: ' + payload['mensaje']);
+  //   print( payload.containsKey('mensaje2') ? payload['mensaje2'] : 'No hay' );
+  // });
 
   }
 }
