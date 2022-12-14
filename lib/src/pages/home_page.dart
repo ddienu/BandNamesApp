@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:band_names_app/src/services/socket_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:band_names_app/src/models/band.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -37,12 +39,25 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   Widget build(BuildContext context) {
+
+    final socketService = Provider.of<SocketService>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('BandNames', style: TextStyle( color: Colors.black),),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 1,
+        actions: [
+
+          Container(
+            margin: EdgeInsets.only( right: 20 ),
+            child: ( socketService.serverStatus == ServerStatus.Online ) 
+              ? Icon( Icons.check_circle, color: Colors.blue[300])
+              : Icon( Icons.wifi_off_outlined, color: Colors.red[300]),
+              
+          )
+        ],
       ),
       body: ListView.builder(
         itemCount: bands.length,

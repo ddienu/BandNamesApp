@@ -31,6 +31,11 @@ class StatusPage extends StatelessWidget {
             'nombre ': 'flutter',
             'mensaje': 'Hola desde flutter'
           });
+
+          socketService.socket.emit( 'mandar-mensaje', {
+            'nombre': 'Table Tennis',
+            'mensaje': 'This a test message'
+          });
         }
         ),
     );
